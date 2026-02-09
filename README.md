@@ -409,16 +409,6 @@ pip install -r requirements.txt
 python manage.py collectstatic --noinput
 ```
 
-## Contributing
-
-1. Create a feature branch: `git checkout -b feature/your-feature`
-2. Make changes and test
-3. Commit: `git commit -m "Add feature"`
-4. Push: `git push origin feature/your-feature`
-
-## License
-
-This project is provided as-is for educational purposes.
 
 ## Support
 
@@ -428,17 +418,3 @@ For issues or questions:
 2. Review Django documentation
 3. Check django-allauth documentation for OAuth issues
 4. Review test cases for usage examples
-
-## Future Enhancements
-
-- API endpoints with token authentication
-- Data export (CSV, PDF)
-- Recurring transactions
-- Multi-user accounts (family/business)
-- Spending forecasts
-- Investment tracking
-- Tax reporting
-- Mobile app
-- Real-time currency conversion
-- Advanced analytics and charts
-- Scheduled reports via email
