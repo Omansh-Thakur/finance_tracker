@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+
+{% block title %}Transactions - Finance Tracker{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <h2>Transactions</h2>
+    </div>
+
+    <div style="margin-bottom: 2rem;">
+        <a href="{% url 'transaction_create' %}" class="btn btn-primary">+ New Transaction</a>
+        <a href="{% url 'category_list' %}" class="btn btn-secondary">Manage Categories</a>
+    </div>
+
+    <!-- Filter Form -->
+    <form method="get" style="margin-bottom: 2rem; padding: 1rem; background-color: #f5f5f5; border-radius: 4px;">
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem;">
+            {{ filter_form.category }}
+            {{ filter_form.month }}
+            {{ filter_form.year }}
+            {{ filter_form.type }}
+            <button type="submit" class="btn btn-secondary">Filter</button>
+            <a href="{% url 'transaction_list' %}" class="btn btn-secondary">Clear</a>
+        </div>
+    </form>
+
+    {% if object_list %}
+    <table>
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Category</th>
+                <th>Description</th>
+                <th>Amount</th>
+                <th>Currency</th>
+                <th>Type</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for transaction in object_list %}
+            <tr>
+                <td>{{ transaction.date }}</td>
+                <td>{{ transaction.category.name }}</td>
+                <td>{{ transaction.description|truncatewords:15 }}</td>
+                <td style="color: {% if transaction.category.type == 'income' %}var(--success-color){% else %}var(--danger-color){% endif %}; font-weight: bold;">
+                    {{ transaction.amount|floatformat:2 }}
+                </td>
+                <td>{{ transaction.currency }}</td>
+                <td>{{ transaction.category.get_type_display }}</td>
+                <td>
+                    <a href="{% url 'transaction_detail' transaction.pk %}" class="btn btn-secondary" style="padding: 0.3rem 0.6rem; font-size: 0.85rem;">View</a>
+                    <a href="{% url 'transaction_update' transaction.pk %}" class="btn btn-secondary" style="padding: 0.3rem 0.6rem; font-size: 0.85rem;">Edit</a>
+                    <a href="{% url 'transaction_delete' transaction.pk %}" class="btn btn-danger" style="padding: 0.3rem 0.6rem; font-size: 0.85rem;">Delete</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <!-- Pagination -->
+    {% if is_paginated %}
+    <div class="pagination">
+        {% if page_obj.has_previous %}
+            <a href="?page=1">First</a>
+            <a href="?page={{ page_obj.previous_page_number }}">Previous</a>
+        {% endif %}
+
+        <span>{{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+
+        {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}">Next</a>
+            <a href="?page={{ page_obj.paginator.num_pages }}">Last</a>
+        {% endif %}
+    </div>
+    {% endif %}
+    {% else %}
+    <p>No transactions found. <a href="{% url 'transaction_create' %}" class="btn btn-primary">Create one</a></p>
+    {% endif %}
+</div>
+{% endblock %}

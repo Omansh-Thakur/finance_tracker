@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block title %}Transaction Details - Finance Tracker{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <h2>Transaction Details</h2>
+    </div>
+
+    <div style="background-color: #f9f9f9; padding: 1.5rem; border-radius: 4px; margin-bottom: 2rem;">
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
+            <div>
+                <p><strong>Category:</strong> {{ transaction.category.name }}</p>
+                <p><strong>Type:</strong> {{ transaction.category.get_type_display }}</p>
+                <p><strong>Amount:</strong> <span style="color: {% if transaction.category.type == 'income' %}var(--success-color){% else %}var(--danger-color){% endif %}; font-weight: bold;">{{ transaction.amount|floatformat:2 }} {{ transaction.currency }}</span></p>
+                <p><strong>Date:</strong> {{ transaction.date }}</p>
+            </div>
+            <div>
+                <p><strong>Description:</strong> {{ transaction.description|default:"No description" }}</p>
+                {% if transaction.receipt %}
+                <p><strong>Receipt:</strong> <a href="{{ transaction.receipt.url }}" target="_blank">View</a></p>
+                {% endif %}
+                <p><strong>Created:</strong> {{ transaction.created_at }}</p>
+                <p><strong>Updated:</strong> {{ transaction.updated_at }}</p>
+            </div>
+        </div>
+    </div>
+
+    <div>
+        <a href="{% url 'transaction_update' transaction.pk %}" class="btn btn-primary">Edit</a>
+        <a href="{% url 'transaction_delete' transaction.pk %}" class="btn btn-danger">Delete</a>
+        <a href="{% url 'transaction_list' %}" class="btn btn-secondary">Back to Transactions</a>
+    </div>
+</div>
+{% endblock %}

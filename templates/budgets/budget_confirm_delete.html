@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block title %}Delete Budget - Finance Tracker{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <h2>Delete Budget?</h2>
+    </div>
+
+    <div class="alert alert-danger">
+        <p>Are you sure you want to delete this budget?</p>
+        <p><strong>Category:</strong> {{ object.category.name }}</p>
+        <p><strong>Monthly Limit:</strong> {{ object.monthly_limit|floatformat:2 }} {{ object.currency }}</p>
+        <p>This action cannot be undone.</p>
+    </div>
+
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger">Yes, Delete</button>
+        <a href="{% url 'budget_list' %}" class="btn btn-secondary">Cancel</a>
+    </form>
+</div>
+{% endblock %}

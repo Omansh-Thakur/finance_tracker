@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+
+{% block title %}Budget Details - Finance Tracker{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <h2>{{ budget.category.name }} - Budget Details</h2>
+    </div>
+
+    <!-- Budget Info -->
+    <div style="background-color: #f9f9f9; padding: 1.5rem; border-radius: 4px; margin-bottom: 2rem;">
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
+            <div>
+                <p><strong>Category:</strong> {{ budget.category.name }}</p>
+                <p><strong>Monthly Limit:</strong> {{ budget.monthly_limit|floatformat:2 }} {{ budget.currency }}</p>
+            </div>
+            <div>
+                <p><strong>Spent This Month:</strong> <span style="color: var(--danger-color); font-weight: bold;">{{ spent|floatformat:2 }} {{ budget.currency }}</span></p>
+                <p><strong>Remaining:</strong>
+                    <span style="color: {% if remaining >= 0 %}var(--success-color){% else %}var(--danger-color){% endif %}; font-weight: bold;">
+                        {{ remaining|floatformat:2 }} {{ budget.currency }}
+                    </span>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Progress -->
+    <div style="margin-bottom: 2rem;">
+        <h3>Usage Progress</h3>
+        <div class="progress" style="height: 30px;">
+            <div class="progress-bar {% if exceeded %}danger{% elif percentage >= 80 %}warning{% else %}success{% endif %}"
+                 style="width: {{ percentage|floatformat:0 }}%; display: flex; align-items: center; justify-content: center; font-size: 1rem; font-weight: bold;">
+                {{ percentage|floatformat:0 }}%
+            </div>
+        </div>
+        {% if exceeded %}
+        <p style="color: var(--danger-color); font-weight: bold; margin-top: 1rem;">⚠️ Budget exceeded!</p>
+        {% endif %}
+    </div>
+
+    <!-- Recent Transactions -->
+    <div style="margin-bottom: 2rem;">
+        <h3>Recent Transactions</h3>
+        {% if recent_transactions %}
+        <table>
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Description</th>
+                    <th>Amount</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for transaction in recent_transactions %}
+                <tr>
+                    <td>{{ transaction.date }}</td>
+                    <td>{{ transaction.description|truncatewords:20 }}</td>
+                    <td>{{ transaction.amount|floatformat:2 }} {{ transaction.currency }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <p>No transactions this month</p>
+        {% endif %}
+    </div>
+
+    <div>
+        <a href="{% url 'budget_update' budget.pk %}" class="btn btn-primary">Edit</a>
+        <a href="{% url 'budget_delete' budget.pk %}" class="btn btn-danger">Delete</a>
+        <a href="{% url 'budget_list' %}" class="btn btn-secondary">Back to Budgets</a>
+    </div>
+</div>
+{% endblock %}

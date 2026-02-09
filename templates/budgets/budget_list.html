@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+
+{% block title %}Budgets - Finance Tracker{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <h2>Budgets</h2>
+    </div>
+
+    <div style="margin-bottom: 2rem;">
+        <a href="{% url 'budget_create' %}" class="btn btn-primary">+ New Budget</a>
+    </div>
+
+    {% if budget_status %}
+    <div style="margin-bottom: 2rem; padding: 1rem; background-color: #f5f5f5; border-radius: 4px;">
+        <p><strong>Total Budgets:</strong> {{ total_budgets }}</p>
+        <p><strong>Exceeded:</strong> <span style="color: var(--danger-color); font-weight: bold;">{{ exceeded_count }}</span></p>
+    </div>
+
+    <div style="display: grid; gap: 2rem;">
+        {% for item in budget_status %}
+        <div style="padding: 1rem; border: 1px solid var(--border-color); border-radius: 4px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                <div>
+                    <h3 style="margin: 0 0 0.5rem 0;">{{ item.budget.category.name }}</h3>
+                    <small>Budget: {{ item.budget.monthly_limit|floatformat:2 }} {{ item.budget.currency }}</small>
+                </div>
+                <div style="text-align: right;">
+                    <strong style="font-size: 1.2rem;">{{ item.percentage|floatformat:0 }}%</strong>
+                    <p style="margin: 0; color: #7f8c8d;">Spent: ₹{{ item.spent|floatformat:2 }}</p>
+                </div>
+            </div>
+
+            <div class="progress">
+                <div class="progress-bar {% if item.exceeded %}danger{% elif item.percentage >= 80 %}warning{% else %}success{% endif %}"
+                     style="width: {{ item.percentage|floatformat:0 }}%">
+                </div>
+            </div>
+
+            {% if item.exceeded %}
+            <p style="color: var(--danger-color); font-weight: bold; margin-top: 0.5rem;">⚠️ Budget exceeded by ₹{{ item.budget.get_spent_amount|add:"-"|add:item.budget.monthly_limit|floatformat:2 }}</p>
+            {% endif %}
+
+            <div style="margin-top: 1rem;">
+                <a href="{% url 'budget_detail' item.budget.pk %}" class="btn btn-secondary" style="padding: 0.3rem 0.6rem; font-size: 0.85rem;">View</a>
+                <a href="{% url 'budget_update' item.budget.pk %}" class="btn btn-secondary" style="padding: 0.3rem 0.6rem; font-size: 0.85rem;">Edit</a>
+                <a href="{% url 'budget_delete' item.budget.pk %}" class="btn btn-danger" style="padding: 0.3rem 0.6rem; font-size: 0.85rem;">Delete</a>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <p>No budgets set yet. <a href="{% url 'budget_create' %}" class="btn btn-primary">Create one</a></p>
+    {% endif %}
+</div>
+{% endblock %}

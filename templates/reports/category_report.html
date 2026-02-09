@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+
+{% block title %}Category Report - Finance Tracker{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <h2>Category-wise Report</h2>
+    </div>
+
+    {% if has_data %}
+    <!-- Summary Stats -->
+    <div class="stats-grid">
+        <div class="stat-box">
+            <div class="stat-label">Total Income</div>
+            <div class="stat-value positive">₹{{ total_income|floatformat:2 }}</div>
+        </div>
+        <div class="stat-box">
+            <div class="stat-label">Total Expenses</div>
+            <div class="stat-value negative">₹{{ total_expense|floatformat:2 }}</div>
+        </div>
+    </div>
+
+    <!-- Income Categories -->
+    {% if income_categories %}
+    <div style="margin-bottom: 2rem;">
+        <h3>Income Categories</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Category</th>
+                    <th>Total Amount</th>
+                    <th>Transactions</th>
+                    <th>Percentage</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in income_categories %}
+                <tr>
+                    <td><strong>{{ item.category.name }}</strong></td>
+                    <td style="color: var(--success-color); font-weight: bold;">₹{{ item.total|floatformat:2 }}</td>
+                    <td>{{ item.transaction_count }}</td>
+                    <td>
+                        {% if total_income > 0 %}
+                            {% widthratio item.total total_income 100 %}%
+                        {% else %}
+                            0%
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% endif %}
+
+    <!-- Expense Categories -->
+    {% if expense_categories %}
+    <div style="margin-bottom: 2rem;">
+        <h3>Expense Categories</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Category</th>
+                    <th>Total Amount</th>
+                    <th>Transactions</th>
+                    <th>Percentage</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in expense_categories %}
+                <tr>
+                    <td><strong>{{ item.category.name }}</strong></td>
+                    <td style="color: var(--danger-color); font-weight: bold;">₹{{ item.total|floatformat:2 }}</td>
+                    <td>{{ item.transaction_count }}</td>
+                    <td>
+                        {% if total_expense > 0 %}
+                            {% widthratio item.total total_expense 100 %}%
+                        {% else %}
+                            0%
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% endif %}
+    {% else %}
+    <p>No transaction data available yet. <a href="{% url 'transaction_create' %}" class="btn btn-primary">Create a transaction</a></p>
+    {% endif %}
+</div>
+{% endblock %}

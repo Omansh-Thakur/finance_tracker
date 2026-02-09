@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block title %}Profile - Finance Tracker{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <h2>My Profile</h2>
+    </div>
+
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
+        <div>
+            <h3>Personal Information</h3>
+            <p><strong>Username:</strong> {{ profile.user.username }}</p>
+            <p><strong>Email:</strong> {{ profile.user.email }}</p>
+            <p><strong>First Name:</strong> {{ profile.user.first_name|default:"Not set" }}</p>
+            <p><strong>Last Name:</strong> {{ profile.user.last_name|default:"Not set" }}</p>
+            <p><strong>Preferred Currency:</strong> {{ profile.preferred_currency }}</p>
+            <p><strong>Bio:</strong> {{ profile.bio|default:"Not set" }}</p>
+            <p><strong>Member Since:</strong> {{ profile.created_at|date:"Y-m-d" }}</p>
+
+            <div style="margin-top: 2rem;">
+                <a href="{% url 'edit_profile' %}" class="btn btn-primary">Edit Profile</a>
+                <a href="{% url 'edit_user' %}" class="btn btn-secondary">Edit User Info</a>
+            </div>
+        </div>
+
+        {% if profile.avatar %}
+        <div>
+            <h3>Avatar</h3>
+            <img src="{{ profile.avatar.url }}" alt="Avatar" style="max-width: 200px; border-radius: 8px;">
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

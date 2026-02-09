@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+
+{% block title %}Monthly Report - Finance Tracker{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <h2>Monthly Income vs Expense Report</h2>
+    </div>
+
+    {% if has_data %}
+    <!-- Summary Stats -->
+    <div class="stats-grid">
+        <div class="stat-box">
+            <div class="stat-label">Total Income</div>
+            <div class="stat-value positive">₹{{ total_income|floatformat:2 }}</div>
+        </div>
+        <div class="stat-box">
+            <div class="stat-label">Total Expenses</div>
+            <div class="stat-value negative">₹{{ total_expense|floatformat:2 }}</div>
+        </div>
+        <div class="stat-box">
+            <div class="stat-label">Net Savings</div>
+            <div class="stat-value {% if total_savings >= 0 %}positive{% else %}negative{% endif %}">₹{{ total_savings|floatformat:2 }}</div>
+        </div>
+        <div class="stat-box">
+            <div class="stat-label">Months with Data</div>
+            <div class="stat-value">{{ months_count }}</div>
+        </div>
+    </div>
+
+    <!-- Monthly Breakdown -->
+    <table>
+        <thead>
+            <tr>
+                <th>Month</th>
+                <th>Income</th>
+                <th>Expenses</th>
+                <th>Savings</th>
+                <th>Savings Rate</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in report_data %}
+            <tr>
+                <td><strong>{{ item.month_display }}</strong></td>
+                <td style="color: var(--success-color); font-weight: bold;">₹{{ item.income|floatformat:2 }}</td>
+                <td style="color: var(--danger-color); font-weight: bold;">₹{{ item.expense|floatformat:2 }}</td>
+                <td style="color: {% if item.savings >= 0 %}var(--success-color){% else %}var(--danger-color){% endif %}; font-weight: bold;">
+                    ₹{{ item.savings|floatformat:2 }}
+                </td>
+                <td>
+                    {% if item.income > 0 %}
+                        {% widthratio item.savings item.income 100 %}%
+                    {% else %}
+                        N/A
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p>No transaction data available yet. <a href="{% url 'transaction_create' %}" class="btn btn-primary">Create a transaction</a></p>
+    {% endif %}
+</div>
+{% endblock %}

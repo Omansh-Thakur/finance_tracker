@@ -1,0 +1,27 @@
+<!-- Email template for budget overrun notification -->
+<html>
+<body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
+    <div style="max-width: 600px; margin: 0 auto; border: 1px solid #ddd; padding: 20px; border-radius: 5px;">
+        <h2>Budget Alert!</h2>
+        <p>Hi {{ user.first_name|default:user.username }},</p>
+
+        <p>Your budget for <strong>{{ budget.category.name }}</strong> has been exceeded!</p>
+
+        <div style="background-color: #fff3cd; padding: 15px; border-radius: 5px; margin: 20px 0;">
+            <p>
+                <strong>Budget Limit:</strong> ₹{{ budget.monthly_limit|floatformat:2 }}<br>
+                <strong>Amount Spent:</strong> ₹{{ spent|floatformat:2 }}<br>
+                <strong>Exceeded By:</strong> ₹{{ spent|add:"-"|add:budget.monthly_limit|floatformat:2 }}
+            </p>
+        </div>
+
+        <p>Recent transaction:<br>
+        Amount: ₹{{ transaction.amount|floatformat:2 }}<br>
+        Date: {{ transaction.date }}</p>
+
+        <p>Please review your spending and adjust your budget if needed.</p>
+
+        <p>Best regards,<br>Finance Tracker Team</p>
+    </div>
+</body>
+</html>

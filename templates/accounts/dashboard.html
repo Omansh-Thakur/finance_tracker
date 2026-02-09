@@ -1,0 +1,95 @@
+{% extends "base.html" %}
+{% load humanize %}
+
+{% block title %}Dashboard - Finance Tracker{% endblock %}
+
+{% block content %}
+<div>
+    <h1>Welcome, {{ user.first_name|default:user.username }}!</h1>
+    <p>Here's your financial overview.</p>
+</div>
+
+<!-- Stats -->
+<div class="stats-grid">
+    <div class="stat-box">
+        <div class="stat-label">Total Income</div>
+        <div class="stat-value positive">₹{{ total_income|floatformat:2 }}</div>
+    </div>
+    <div class="stat-box">
+        <div class="stat-label">Total Expenses</div>
+        <div class="stat-value negative">₹{{ total_expenses|floatformat:2 }}</div>
+    </div>
+    <div class="stat-box">
+        <div class="stat-label">Savings</div>
+        <div class="stat-value {% if savings >= 0 %}positive{% else %}negative{% endif %}">₹{{ savings|floatformat:2 }}</div>
+    </div>
+    <div class="stat-box">
+        <div class="stat-label">Total Transactions</div>
+        <div class="stat-value">{{ transaction_count }}</div>
+    </div>
+</div>
+
+<!-- Budget Status -->
+<div class="card">
+    <div class="card-header">
+        <h2>Budget Status</h2>
+    </div>
+    {% if budget_status %}
+        {% for item in budget_status %}
+        <div style="margin-bottom: 2rem;">
+            <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                <strong>{{ item.budget.category.name }}</strong>
+                <span>₹{{ item.spent|floatformat:2 }} / ₹{{ item.budget.monthly_limit|floatformat:2 }}</span>
+            </div>
+            <div class="progress">
+                <div class="progress-bar {% if item.exceeded %}danger{% elif item.percentage >= 80 %}warning{% else %}success{% endif %}"
+                     style="width: {{ item.percentage|floatformat:0 }}%">
+                    {{ item.percentage|floatformat:0 }}%
+                </div>
+            </div>
+            {% if item.exceeded %}
+            <p style="color: var(--danger-color); font-size: 0.9rem; margin-top: 0.5rem;">⚠️ Budget exceeded!</p>
+            {% endif %}
+        </div>
+        {% endfor %}
+    {% else %}
+        <p>No budgets set yet. <a href="{% url 'budget_create' %}" class="btn btn-primary">Create Budget</a></p>
+    {% endif %}
+</div>
+
+<!-- Recent Transactions -->
+<div class="card">
+    <div class="card-header">
+        <h2>Recent Transactions</h2>
+    </div>
+    {% if recent_transactions %}
+        <table>
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Category</th>
+                    <th>Description</th>
+                    <th>Amount</th>
+                    <th>Type</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for transaction in recent_transactions %}
+                <tr>
+                    <td>{{ transaction.date }}</td>
+                    <td><a href="">{{ transaction.category.name }}</a></td>
+                    <td>{{ transaction.description|truncatewords:10 }}</td>
+                    <td style="color: {% if transaction.category.type == 'income' %}var(--success-color){% else %}var(--danger-color){% endif %};">
+                        {{ transaction.amount|floatformat:2 }} {{ transaction.currency }}
+                    </td>
+                    <td>{{ transaction.category.get_type_display }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <a href="{% url 'transaction_list' %}" class="btn btn-secondary">View All Transactions</a>
+    {% else %}
+        <p>No transactions yet. <a href="{% url 'transaction_create' %}" class="btn btn-primary">Add Transaction</a></p>
+    {% endif %}
+</div>
+{% endblock %}

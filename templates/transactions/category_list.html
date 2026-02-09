@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+
+{% block title %}Categories - Finance Tracker{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <h2>Categories</h2>
+    </div>
+
+    <div style="margin-bottom: 2rem;">
+        <a href="{% url 'category_create' %}" class="btn btn-primary">+ New Category</a>
+    </div>
+
+    <div style="margin-bottom: 2rem;">
+        <p><strong>Income Categories:</strong> {{ income_categories }}</p>
+        <p><strong>Expense Categories:</strong> {{ expense_categories }}</p>
+    </div>
+
+    {% if object_list %}
+    <table>
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Type</th>
+                <th>Description</th>
+                <th>Created</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for category in object_list %}
+            <tr>
+                <td><strong>{{ category.name }}</strong></td>
+                <td>{{ category.get_type_display }}</td>
+                <td>{{ category.description|truncatewords:15 }}</td>
+                <td>{{ category.created_at|date:"Y-m-d" }}</td>
+                <td>
+                    <a href="{% url 'category_update' category.pk %}" class="btn btn-secondary" style="padding: 0.3rem 0.6rem; font-size: 0.85rem;">Edit</a>
+                    <a href="{% url 'category_delete' category.pk %}" class="btn btn-danger" style="padding: 0.3rem 0.6rem; font-size: 0.85rem;">Delete</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    {% if is_paginated %}
+    <div class="pagination">
+        {% if page_obj.has_previous %}
+            <a href="?page=1">First</a>
+            <a href="?page={{ page_obj.previous_page_number }}">Previous</a>
+        {% endif %}
+
+        <span>{{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+
+        {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}">Next</a>
+            <a href="?page={{ page_obj.paginator.num_pages }}">Last</a>
+        {% endif %}
+    </div>
+    {% endif %}
+    {% else %}
+    <p>No categories yet. <a href="{% url 'category_create' %}" class="btn btn-primary">Create one</a></p>
+    {% endif %}
+</div>
+{% endblock %}

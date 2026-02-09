@@ -1,0 +1,116 @@
+{% extends "base.html" %}
+
+{% block title %}Sign Up - Finance Tracker{% endblock %}
+
+{% block content %}
+<div style="max-width: 500px; margin: 4rem auto;">
+    <div class="card">
+        <div class="card-header">
+            <h2>Create Your Account</h2>
+            <p style="margin: 0.5rem 0 0 0; color: #666; font-size: 0.95rem;">Start tracking your finances today</p>
+        </div>
+
+        <div style="padding: 2rem;">
+            <form method="post" action="{% url 'account_signup' %}">
+                {% csrf_token %}
+
+                <!-- Username Field -->
+                <div class="form-group">
+                    <label for="id_username">Username</label>
+                    <input
+                        type="text"
+                        name="username"
+                        id="id_username"
+                        class="form-control"
+                        placeholder="Choose a username"
+                        required
+                        autofocus
+                    >
+                    {% if form.username.errors %}
+                        <div class="form-error">{{ form.username.errors }}</div>
+                    {% endif %}
+                </div>
+
+                <!-- Email Field -->
+                <div class="form-group">
+                    <label for="id_email">Email Address</label>
+                    <input
+                        type="email"
+                        name="email"
+                        id="id_email"
+                        class="form-control"
+                        placeholder="Enter your email"
+                        required
+                    >
+                    {% if form.email.errors %}
+                        <div class="form-error">{{ form.email.errors }}</div>
+                    {% endif %}
+                </div>
+
+                <!-- Password Field -->
+                <div class="form-group">
+                    <label for="id_password1">Password</label>
+                    <input
+                        type="password"
+                        name="password1"
+                        id="id_password1"
+                        class="form-control"
+                        placeholder="Create a strong password"
+                        required
+                    >
+                    {% if form.password1.errors %}
+                        <div class="form-error">{{ form.password1.errors }}</div>
+                    {% endif %}
+                </div>
+
+                <!-- Confirm Password Field -->
+                <div class="form-group">
+                    <label for="id_password2">Confirm Password</label>
+                    <input
+                        type="password"
+                        name="password2"
+                        id="id_password2"
+                        class="form-control"
+                        placeholder="Confirm your password"
+                        required
+                    >
+                    {% if form.password2.errors %}
+                        <div class="form-error">{{ form.password2.errors }}</div>
+                    {% endif %}
+                </div>
+
+                <!-- Error Messages -->
+                {% if form.non_field_errors %}
+                    <div class="alert alert-danger" style="margin-bottom: 1.5rem;">
+                        {% for error in form.non_field_errors %}
+                            <p style="margin: 0;">{{ error }}</p>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+
+                <!-- Submit Button -->
+                <button type="submit" class="btn btn-success" style="width: 100%; padding: 0.75rem; font-size: 1rem; font-weight: 600; margin-bottom: 1rem;">
+                    Create Account
+                </button>
+            </form>
+
+            <!-- Login Link -->
+            <div style="padding-top: 1.5rem; border-top: 1px solid var(--border-color); text-align: center;">
+                <p style="margin: 0; color: #666;">
+                    Already have an account?
+                    <a href="{% url 'account_login' %}" style="color: var(--secondary-color); text-decoration: none; font-weight: 600;">
+                        Sign in here
+                    </a>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Info Banner -->
+    <div style="margin-top: 2rem; padding: 1rem; background-color: white; border-radius: 8px; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); text-align: center;">
+        <p style="margin: 0; color: #666; font-size: 0.9rem;">
+            <strong>Password Requirements:</strong> At least 8 characters, mix of letters and numbers
+        </p>
+    </div>
+</div>
+{% endblock %}
