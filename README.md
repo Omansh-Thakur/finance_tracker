@@ -76,7 +76,7 @@ finance_tracker/
 ├── tests.py                 # Test suite
 ├── requirements.txt         # Python dependencies
 ├── .env.example             # Environment variables template
-└── README.md                # This file
+└── README.md                # Readme file
 ```
 
 ## Installation & Setup
